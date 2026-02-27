@@ -85,9 +85,9 @@ export default function Login({ token, setToken }) {
       </div>
 
       {/* The Submit Button - Fixed Sizing */}
-      <button className="mt-4 w-full bg-zinc-900 text-white py-4 rounded-2xl font-bold hover:bg-purple-600 hover:shadow-xl hover:shadow-purple-200 transition-all active:scale-[0.98] flex justify-center items-center gap-x-2">
-        Sign In
-      </button>
+<button class="w-full max-w-[240px] h-12 bg-zinc-900 text-white rounded-full font-bold hover:bg-purple-600 transition-all duration-300 shadow-lg mx-auto block">
+  Sign In
+</button>
     </form>
     
     <p className="text-center mt-8 text-sm text-zinc-500 font-medium">
