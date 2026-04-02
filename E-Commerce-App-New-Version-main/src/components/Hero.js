@@ -1,6 +1,4 @@
 import React from "react";
-// import image
-import WomanImg from "../img/woman_hero.png";
 // import lin
 import { Link } from "react-router-dom";
 
