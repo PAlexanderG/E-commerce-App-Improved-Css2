@@ -1,11 +1,6 @@
-import { useContext } from "react";
-// import product context
-import { ProductContext } from "../contexts/ProductContext";
-// import components
 import Product from "../components/Product";
 // import hero
 import Hero from "../components/Hero";
-import Login from "../components/Login";
 import { useState, useEffect } from "react";
 
 const Home = () => {
@@ -17,7 +12,7 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       let fetchedP = [];
-      const response = await fetch("https://fakestoreapi.com/products");
+      const response = await fetch("/api/products");
       const data = await response.json();
       // console.log(data);
  if (sort) {
