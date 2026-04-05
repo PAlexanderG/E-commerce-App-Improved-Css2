@@ -6,15 +6,17 @@ import { CartContext } from "../contexts/CartContext";
 const CartItem = ({ item }) => {
   const { removeFromCart, increaseAmount, decreaseAmount } = useContext(CartContext);
 
-  // Guard clause to prevent crashing if item is undefined
+  // 1. HOOKS FIRST: useMemo must be called before any early returns
+  const totalDisplay = useMemo(() => {
+    if (!item) return "0.00";
+    return (item.price * item.amount).toFixed(2);
+  }, [item]);
+
+  // 2. GUARD CLAUSE SECOND: This is now safe because all hooks are initialized
   if (!item) return null;
 
+  // 3. DESTRUCTURE AFTER THE GUARD
   const { id, title, image, price, amount } = item;
-
-  // Memoized subtotal for this specific item
-  const totalDisplay = useMemo(() => {
-    return (price * amount).toFixed(2);
-  }, [price, amount]);
 
   return (
     <div className="flex gap-x-4 py-4 lg:px-6 border-b border-gray-100 w-full font-light text-gray-500 hover:bg-gray-50/50 transition-colors">
@@ -30,7 +32,6 @@ const CartItem = ({ item }) => {
         </Link>
 
         <div className="w-full flex flex-col justify-center">
-          {/* Title & Remove Button */}
           <div className="flex justify-between items-start mb-2">
             <Link
               to={`/product/${id}`}
@@ -49,7 +50,7 @@ const CartItem = ({ item }) => {
           </div>
 
           <div className="flex gap-x-2 h-[36px] text-sm items-center">
-            {/* Quantity Control Unit */}
+            {/* Quantity Control */}
             <div className="flex flex-1 max-w-[100px] items-center h-full border border-gray-200 rounded-md overflow-hidden">
               <button
                 onClick={() => decreaseAmount(id)}
@@ -72,12 +73,12 @@ const CartItem = ({ item }) => {
               </button>
             </div>
 
-            {/* Individual Item Price */}
+            {/* Price Per Item */}
             <div className="flex-1 flex items-center justify-around text-gray-400">
-              $ {price.toFixed(2)}
+              $ {parseFloat(price).toFixed(2)}
             </div>
 
-            {/* Total Price for this line item */}
+            {/* Total Price */}
             <div className="flex-1 flex justify-end items-center text-primary font-bold">
               $ {totalDisplay}
             </div>
