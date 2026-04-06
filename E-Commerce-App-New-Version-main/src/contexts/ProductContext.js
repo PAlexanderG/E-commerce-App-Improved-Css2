@@ -1,23 +1,15 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState } from "react";
+// Import local data
+import productsData from "../data/products.json";
 
+// Create context
 export const ProductContext = createContext();
 
 const ProductProvider = ({ children }) => {
-  const [products, setProducts] = useState([]);
+  // Initialize the products state with the local data immediately
+  const [products] = useState(productsData);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch("/api/products");
-        const data = await response.json();
-        setProducts(data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-    fetchProducts();
-  }, []);
-
+  // We no longer need useEffect or fetch() here because the data is local
   return (
     <ProductContext.Provider value={{ products }}>
       {children}
