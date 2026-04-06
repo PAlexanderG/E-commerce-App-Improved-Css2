@@ -12,7 +12,7 @@ const Home = () => {
         const response = await fetch("/api/products");
         const data = await response.json();
 
-        // 🛡️ Safety check: only filter if data is actually an array
+        // 🛡️ Check if data is an array before filtering to avoid "filter is not a function"
         if (Array.isArray(data)) {
           const filteredData = sort
             ? data.filter(item => item.category === "electronics" || item.category === "jewelery")
@@ -41,8 +41,8 @@ const Home = () => {
                 <Product product={product} key={product.id} />
               ))
             ) : (
-              <div className="col-span-full text-center text-gray-400">
-                Loading products or collection empty...
+              <div className="col-span-full text-center text-gray-400 py-20">
+                <p className="text-xl">Updating collection...</p>
               </div>
             )}
           </div>
