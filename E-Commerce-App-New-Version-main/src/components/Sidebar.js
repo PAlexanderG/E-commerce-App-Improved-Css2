@@ -1,92 +1,72 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { IoMdAdd, IoMdClose, IoMdRemove } from "react-icons/io";
+import { IoMdArrowForward } from "react-icons/io";
+import { FiTrash2 } from "react-icons/fi";
+// Import your CartItem and Contexts
+import CartItem from "../components/CartItem";
+import { SidebarContext } from "../contexts/SidebarContext";
 import { CartContext } from "../contexts/CartContext";
 
-const CartItem = ({ item }) => {
-  const { removeFromCart, increaseAmount, decreaseAmount } = useContext(CartContext);
-
-  // 1. HOOKS FIRST: useMemo must be called before any early returns
-  const totalDisplay = useMemo(() => {
-    if (!item) return "0.00";
-    return (item.price * item.amount).toFixed(2);
-  }, [item]);
-
-  // 2. GUARD CLAUSE SECOND: This is now safe because all hooks are initialized
-  if (!item) return null;
-
-  // 3. DESTRUCTURE AFTER THE GUARD
-  const { id, title, image, price, amount } = item;
+const Sidebar = () => {
+  const { isOpen, handleClose } = useContext(SidebarContext);
+  const { cart, clearCart, total, itemAmount } = useContext(CartContext);
 
   return (
-    <div className="flex gap-x-4 py-4 lg:px-6 border-b border-gray-100 w-full font-light text-gray-500 hover:bg-gray-50/50 transition-colors">
-      <div className="w-full min-h-[100px] flex items-center gap-x-4">
-        
-        {/* Product Image */}
-        <Link to={`/product/${id}`} className="group shrink-0">
-          <img 
-            className="max-w-[70px] rounded-lg group-hover:scale-105 transition-transform duration-300" 
-            src={image} 
-            alt={title} 
-          />
-        </Link>
+    <div
+      className={`${
+        isOpen ? "right-0" : "-right-full"
+      } w-full bg-white fixed top-0 h-full shadow-2xl md:w-[35vw] xl:max-w-[30vw] transition-all duration-300 z-50 px-4 lg:px-[35px] flex flex-col`}
+    >
+      {/* Sidebar Header */}
+      <div className="flex items-center justify-between py-6 border-b">
+        <div className="uppercase text-sm font-semibold">
+          Shopping Bag ({itemAmount})
+        </div>
+        {/* Close Icon */}
+        <div
+          onClick={handleClose}
+          className="cursor-pointer w-8 h-8 flex justify-center items-center hover:scale-110 transition-transform"
+        >
+          <IoMdArrowForward className="text-2xl" />
+        </div>
+      </div>
 
-        <div className="w-full flex flex-col justify-center">
-          <div className="flex justify-between items-start mb-2">
-            <Link
-              to={`/product/${id}`}
-              className="text-sm uppercase font-semibold max-w-[240px] text-primary hover:text-purple-600 transition-colors leading-tight"
-            >
-              {title}
-            </Link>
-            
-            <button
-              onClick={() => removeFromCart(id)}
-              className="text-xl cursor-pointer text-gray-400 hover:text-red-500 transition-colors p-1"
-              aria-label="Remove item"
-            >
-              <IoMdClose />
-            </button>
+      {/* Cart Items List - scrollable area */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
+        {cart.map((item) => (
+          <CartItem item={item} key={item.id} />
+        ))}
+      </div>
+
+      {/* Sidebar Footer */}
+      <div className="flex flex-col gap-y-3 py-4 mt-4 border-t">
+        <div className="flex w-full justify-between items-center">
+          <div className="uppercase font-semibold">
+            <span className="mr-2">Total:</span>$ {parseFloat(total).toFixed(2)}
           </div>
-
-          <div className="flex gap-x-2 h-[36px] text-sm items-center">
-            {/* Quantity Control */}
-            <div className="flex flex-1 max-w-[100px] items-center h-full border border-gray-200 rounded-md overflow-hidden">
-              <button
-                onClick={() => decreaseAmount(id)}
-                className="flex-1 flex justify-center items-center h-full hover:bg-gray-100 transition-colors"
-                aria-label="Decrease quantity"
-              >
-                <IoMdRemove />
-              </button>
-              
-              <div className="h-full flex justify-center items-center px-2 font-medium text-primary">
-                {amount}
-              </div>
-
-              <button
-                onClick={() => increaseAmount(id)}
-                className="flex-1 flex justify-center items-center h-full hover:bg-gray-100 transition-colors"
-                aria-label="Increase quantity"
-              >
-                <IoMdAdd />
-              </button>
-            </div>
-
-            {/* Price Per Item */}
-            <div className="flex-1 flex items-center justify-around text-gray-400">
-              $ {parseFloat(price).toFixed(2)}
-            </div>
-
-            {/* Total Price */}
-            <div className="flex-1 flex justify-end items-center text-primary font-bold">
-              $ {totalDisplay}
-            </div>
+          {/* Clear Cart */}
+          <div
+            onClick={clearCart}
+            className="cursor-pointer py-4 bg-red-500 text-white w-12 h-12 flex justify-center items-center text-xl rounded-md hover:bg-red-600 transition-colors"
+          >
+            <FiTrash2 />
           </div>
         </div>
+        <Link 
+          to="/" 
+          className="bg-gray-200 flex p-4 justify-center items-center text-primary w-full font-medium hover:bg-gray-300 transition-colors"
+        >
+          View Cart
+        </Link>
+        <Link 
+          to="/" 
+          className="bg-primary flex p-4 justify-center items-center text-white w-full font-medium hover:bg-zinc-800 transition-colors"
+        >
+          Checkout
+        </Link>
       </div>
     </div>
   );
 };
 
-export default React.memo(CartItem);
+export default Sidebar;
