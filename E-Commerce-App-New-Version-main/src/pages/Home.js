@@ -1,35 +1,49 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import Product from "../components/Product";
+import Hero from "../components/Hero";
+// Import the Context directly
+import { ProductContext } from "../contexts/ProductContext";
 
-const Hero = () => {
+const Home = () => {
+  const { products } = useContext(ProductContext);
+  const [sort, setSort] = useState(false);
+
+  // Filter products directly in the render logic
+  const filteredProducts = products.filter((item) => {
+    if (sort) {
+      return item.category === "electronics" || item.category === "jewelery";
+    }
+    return item.category === "men's clothing" || item.category === "women's clothing";
+  });
+
   return (
-    <section className="h-[800px] bg-hero bg-no-repeat bg-cover bg-center py-24">
-      <div className="container mx-auto flex justify-around h-full">
-        {/* text wrapper */}
-        <div className="flex flex-col justify-center">
-          {/* subtitle */}
-          <div className="font-semibold flex items-center uppercase">
-            <div className="w-10 h-[2px] bg-black mr-3"></div>
-            <span>New Trend</span>
-          </div>
-          {/* title */}
-          <h1 className="text-[70px] leading-[1.1] font-light mb-4 text-black">
-            AUTUMNAL EQUINOX <br />
-            <span className="font-semibold text-red-600">
-              Your Online Store
-            </span>
-          </h1>
-          {/* 🚀 CRITICAL FIX: Link updated to the new documentation route */}
-          <Link
-            to={"/project-info"}
-            className="self-start uppercase font-semibold text-red-600 border-b-2 border-primary hover:text-black hover:border-black transition-all"
-          >
-            Project Details
-          </Link>
+    <div>
+      <Hero />
+      <section className="py-16">
+        <div className="container mx-auto">
+          {/* If products exist, show them. Otherwise show a clear error. */}
+          {filteredProducts.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-[30px] max-w-sm mx-auto md:max-w-none md:mx-0">
+              {filteredProducts.map((product) => (
+                <Product product={product} key={product.id} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-xl">No products found in local data.</div>
+          )}
         </div>
-      </div>
-    </section>
+
+        <div className="flex justify-center my-10">
+          <button
+            className="px-8 py-3 bg-zinc-900 hover:bg-purple-600 text-white font-semibold rounded-full uppercase text-sm transition-all shadow-lg"
+            onClick={() => setSort(!sort)}
+          >
+            {sort ? "See Clothing Collection" : "Explore Electronics & Jewelry"}
+          </button>
+        </div>
+      </section>
+    </div>
   );
 };
 
-export default Hero;
+export default Home;
