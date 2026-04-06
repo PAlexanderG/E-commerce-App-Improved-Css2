@@ -1,24 +1,28 @@
 import React, { createContext, useState, useEffect } from "react";
 
-// create context
 export const ProductContext = createContext();
-// create Product provider passing as a children object and then as a
-// parameter in the return
+
 const ProductProvider = ({ children }) => {
-  // products state and setProducts
   const [products, setProducts] = useState([]);
-  // fetch products
-  useEffect(()=> {
-const fetchProducts = async ()=> {
-  const response = await fetch("/api/products");
-  const data = await response.json();
-  // console.log(data);
-  setProducts(data);
-};
-fetchProducts();
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("/api/products");
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    fetchProducts();
   }, []);
-  // pass the value of {{products}}
-  return <ProductContext.Provider value={{products}}>{children}</ProductContext.Provider>;
+
+  return (
+    <ProductContext.Provider value={{ products }}>
+      {children}
+    </ProductContext.Provider>
+  );
 };
 
 export default ProductProvider;
