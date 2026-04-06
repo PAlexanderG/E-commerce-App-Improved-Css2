@@ -2,13 +2,16 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { IoMdArrowForward } from "react-icons/io";
 import { FiTrash2 } from "react-icons/fi";
-// Import your CartItem and Contexts
+// Components
 import CartItem from "../components/CartItem";
+// Contexts
 import { SidebarContext } from "../contexts/SidebarContext";
 import { CartContext } from "../contexts/CartContext";
 
 const Sidebar = () => {
+  // Destructure variables from SidebarContext
   const { isOpen, handleClose } = useContext(SidebarContext);
+  // Destructure variables from CartContext
   const { cart, clearCart, total, itemAmount } = useContext(CartContext);
 
   return (
@@ -17,7 +20,7 @@ const Sidebar = () => {
         isOpen ? "right-0" : "-right-full"
       } w-full bg-white fixed top-0 h-full shadow-2xl md:w-[35vw] xl:max-w-[30vw] transition-all duration-300 z-50 px-4 lg:px-[35px] flex flex-col`}
     >
-      {/* Sidebar Header */}
+      {/* 1. Header (Shopping Bag Count & Close Button) */}
       <div className="flex items-center justify-between py-6 border-b">
         <div className="uppercase text-sm font-semibold">
           Shopping Bag ({itemAmount})
@@ -31,39 +34,45 @@ const Sidebar = () => {
         </div>
       </div>
 
-      {/* Cart Items List - scrollable area */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
-        {cart.map((item) => (
-          <CartItem item={item} key={item.id} />
-        ))}
+      {/* 2. Cart Items (Scrollable Area) */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden py-2 custom-scrollbar">
+        {cart.length > 0 ? (
+          cart.map((item) => <CartItem item={item} key={item.id} />)
+        ) : (
+          <div className="h-full flex flex-col items-center justify-center text-gray-400">
+            <p className="text-lg font-medium">Your bag is empty</p>
+          </div>
+        )}
       </div>
 
-      {/* Sidebar Footer */}
+      {/* 3. Footer (Fixed at the bottom of the sidebar) */}
       <div className="flex flex-col gap-y-3 py-4 mt-4 border-t">
         <div className="flex w-full justify-between items-center">
+          {/* Total Price */}
           <div className="uppercase font-semibold">
             <span className="mr-2">Total:</span>$ {parseFloat(total).toFixed(2)}
           </div>
-          {/* Clear Cart */}
+          {/* Clear Cart Icon */}
           <div
             onClick={clearCart}
-            className="cursor-pointer py-4 bg-red-500 text-white w-12 h-12 flex justify-center items-center text-xl rounded-md hover:bg-red-600 transition-colors"
+            className="cursor-pointer py-4 bg-red-500 text-white w-12 h-12 flex justify-center items-center text-xl rounded shadow-md hover:bg-red-600 transition-all"
           >
             <FiTrash2 />
           </div>
         </div>
+        
+        {/* Navigation / Actions */}
         <Link 
           to="/" 
-          className="bg-gray-200 flex p-4 justify-center items-center text-primary w-full font-medium hover:bg-gray-300 transition-colors"
+          className="bg-gray-200 flex p-4 justify-center items-center text-primary w-full font-medium hover:bg-gray-300 transition-all"
         >
           View Cart
         </Link>
-        <Link 
-          to="/" 
-          className="bg-primary flex p-4 justify-center items-center text-white w-full font-medium hover:bg-zinc-800 transition-colors"
+        <button 
+          className="bg-black flex p-4 justify-center items-center text-white w-full font-medium hover:bg-zinc-800 transition-all uppercase tracking-widest text-sm"
         >
           Checkout
-        </Link>
+        </button>
       </div>
     </div>
   );
