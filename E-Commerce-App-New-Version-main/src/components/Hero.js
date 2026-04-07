@@ -32,7 +32,7 @@ const Hero = () => {
             </span>
           </h1>
           <Link
-            to={"/"}
+            to={"/project-info"}
             className="self-start uppercase font-semibold text-red-600
           border-b-2 border-primary"
           >
